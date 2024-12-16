@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+
+<AnchorPane prefHeight="269.0" prefWidth="420.0" style="-fx-background-color: #3a3b3c;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.aquachat.controller.PageModifBudget">
+   <children>
+      <Label layoutX="102.0" layoutY="75.0" prefHeight="31.0" prefWidth="142.0" text="Nouveau budget :" textFill="WHITE" AnchorPane.leftAnchor="102.0">
+         <font>
+            <Font name="Arial Bold" size="16.0" />
+         </font>
+      </Label>
+      <TextField fx:id="txtBudget" layoutX="81.0" layoutY="113.0" prefHeight="31.0" prefWidth="196.0" promptText="1000" AnchorPane.leftAnchor="102.0" AnchorPane.rightAnchor="122.0" />
+      <Button fx:id="btnModifier" layoutX="80.0" layoutY="157.0" mnemonicParsing="false" onMouseClicked="#btnModifierClicked" prefHeight="31.0" prefWidth="237.0" style="-fx-background-color: #737373; -fx-border-radius: 10; -fx-background-radius: 10;" text="Modifier" textFill="WHITE" AnchorPane.leftAnchor="102.0" AnchorPane.rightAnchor="102.0">
+         <font>
+            <Font name="Arial Bold" size="16.0" />
+         </font>
+      </Button>
+      <Label layoutX="304.0" layoutY="113.0" prefHeight="31.0" prefWidth="28.0" text="€ " textFill="WHITE">
+         <font>
+            <Font name="Arial Bold" size="16.0" />
+         </font>
+      </Label>
+   </children>
+</AnchorPane>

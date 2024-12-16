@@ -1,0 +1,21 @@
+Manifest-Version: 1.0
+Main-Class: org.example.aquachat.HelloApplication
+Class-Path: audio-4.0.17.jar fxgl-io-17.3.jar javafx-graphics-21-win.jar
+  javafx-controls-21.jar javafx-swing-21.jar toolbox-21.0.5.jar javafx-c
+ ontrols-21-win.jar annotations-13.0.jar util-4.0.17.jar fxgl-scene-17.3
+ .jar javafx-fxml-21.jar countries-21.0.3.jar fxgl-gameplay-17.3.jar val
+ idatorfx-0.5.0.jar jackson-core-2.14.2.jar javafx-web-21-win.jar lifecy
+ cle-4.0.17.jar javafx-base-21.jar formsfx-core-11.6.0.jar ikonli-core-1
+ 2.3.1.jar javafx-swing-21-win.jar javafx-base-21-win.jar toolboxfx-21.0
+ .3.jar javafx-media-21-win.jar tilesfx-21.0.3.jar heatmap-21.0.3.jar ko
+ tlin-stdlib-common-1.8.10.jar controlsfx-11.2.1.jar ikonli-javafx-12.3.
+ 1.jar bootstrapfx-core-0.4.0.jar fxgl-17.3.jar fxgl-core-17.3.jar fxgl-
+ entity-17.3.jar javafx-swt.jar javafx.web.jar javafx.base.jar javafx.fx
+ ml.jar javafx.media.jar javafx.swing.jar javafx.controls.jar javafx.gra
+ phics.jar storage-4.0.17.jar javafx-graphics-21.jar javafx-fxml-21-win.
+ jar javafx-media-21.jar javafx-swt.jar javafx.web.jar javafx.base.jar j
+ avafx.fxml.jar javafx.media.jar javafx.swing.jar javafx.controls.jar ja
+ vafx.graphics.jar javafx-web-21.jar jackson-annotations-2.14.2.jar jack
+ son-databind-2.14.2.jar mssql-jdbc-12.2.0.jre8.jar kotlin-stdlib-1.8.10
+ .jar
+
