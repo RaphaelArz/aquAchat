@@ -161,6 +161,18 @@ public class OuvrierController {
         return budget;
     }
 
+    public ArrayList<Ouvrier>getOuvriersWithBudgetDepasse(String dateDebut, String dateFin){
+        ArrayList<Ouvrier>allOuvriers = getOuvrier(dateDebut,dateFin);
+        ArrayList<Ouvrier>ouvriersWithBudgetDepasse = new ArrayList<>();
+
+        for(Ouvrier ouvrier : allOuvriers){
+            if (ouvrier.getBudget()< ouvrier.getAchat()){
+                ouvriersWithBudgetDepasse.add(ouvrier);
+            }
+        }
+        return ouvriersWithBudgetDepasse;
+    }
+
 
 
 

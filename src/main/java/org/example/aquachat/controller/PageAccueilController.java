@@ -19,6 +19,7 @@ import org.example.aquachat.entity.Ouvrier;
 
 import java.io.IOException;
 import java.net.URL;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ResourceBundle;
@@ -77,6 +78,8 @@ public class PageAccueilController implements Initializable {
     private TextField txtRecherche;
 
     AquAchatBDDController aquAchatBDDController;
+    @javafx.fxml.FXML
+    private CheckBox cbBudgetdepasse;
 
 
     @javafx.fxml.FXML
@@ -126,6 +129,9 @@ public class PageAccueilController implements Initializable {
 
     @javafx.fxml.FXML
     public void tblOuvriersClicked(Event event) throws IOException {
+
+
+
         if (!(tblOuvriers.getSelectionModel().getSelectedItem() == null)) {
             Ouvrier ouvrierSelectionne = tblOuvriers.getSelectionModel().getSelectedItem();
 
@@ -153,20 +159,40 @@ public class PageAccueilController implements Initializable {
         try {
             String dateDebut = dpDebut.getValue().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
             String dateFin = dpFin.getValue().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+            if (cbBudgetdepasse.isSelected()) {
+                }
+
+
 
             if (!dateDebut.equals(premierJour) || !dateFin.equals(dernierJour)) {
-                premierJour = dateDebut;
-                dernierJour = dateFin;
-                ouvrierController = new OuvrierController();
-                listOuvriers = FXCollections.observableArrayList();
-                listOuvriers.addAll(ouvrierController.getOuvrier(dateDebut, dateFin));
-                tcAchat.setCellValueFactory(new PropertyValueFactory<>("achat"));
-                tcNom.setCellValueFactory(new PropertyValueFactory<>("nom"));
-                tcPrenom.setCellValueFactory(new PropertyValueFactory<>("prenom"));
-                tcId.setCellValueFactory(new PropertyValueFactory<>("id"));
-                tcAgence.setCellValueFactory(new PropertyValueFactory<>("agence"));
+                if (cbBudgetdepasse.isSelected()) {
+                    premierJour = dateDebut;
+                    dernierJour = dateFin;
+                    ouvrierController = new OuvrierController();
+                    listOuvriers = FXCollections.observableArrayList();
+                    listOuvriers.addAll(ouvrierController.getOuvriersWithBudgetDepasse(dateDebut, dateFin));
+                    tcAchat.setCellValueFactory(new PropertyValueFactory<>("achat"));
+                    tcNom.setCellValueFactory(new PropertyValueFactory<>("nom"));
+                    tcPrenom.setCellValueFactory(new PropertyValueFactory<>("prenom"));
+                    tcId.setCellValueFactory(new PropertyValueFactory<>("id"));
+                    tcAgence.setCellValueFactory(new PropertyValueFactory<>("agence"));
 
-                search();
+                    search();
+                }else {
+                    premierJour = dateDebut;
+                    dernierJour = dateFin;
+                    ouvrierController = new OuvrierController();
+                    listOuvriers = FXCollections.observableArrayList();
+                    listOuvriers.addAll(ouvrierController.getOuvrier(dateDebut, dateFin));
+                    tcAchat.setCellValueFactory(new PropertyValueFactory<>("achat"));
+                    tcNom.setCellValueFactory(new PropertyValueFactory<>("nom"));
+                    tcPrenom.setCellValueFactory(new PropertyValueFactory<>("prenom"));
+                    tcId.setCellValueFactory(new PropertyValueFactory<>("id"));
+                    tcAgence.setCellValueFactory(new PropertyValueFactory<>("agence"));
+
+                    search();
+                }
+
 
 
             }
@@ -232,6 +258,8 @@ public class PageAccueilController implements Initializable {
 
     @javafx.fxml.FXML
     public void actualiserTblMail(Event event) {
+
+
        aquAchatBDDController = new AquAchatBDDController();
         ObservableList<Ouvrier> listMail = FXCollections.observableArrayList();
         listMail.addAll(aquAchatBDDController.getMail());
@@ -286,5 +314,42 @@ public class PageAccueilController implements Initializable {
                 }
             });
         }
+    }
+
+    @javafx.fxml.FXML
+    public void cbBudgetDepasseClicked(Event event) throws SQLException, ClassNotFoundException {
+        if (cbBudgetdepasse.isSelected()){
+            String dateDebut = dpDebut.getValue().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+            String dateFin = dpFin.getValue().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+            premierJour = dateDebut;
+            dernierJour = dateFin;
+            ouvrierController = new OuvrierController();
+            listOuvriers = FXCollections.observableArrayList();
+            listOuvriers.addAll(ouvrierController.getOuvriersWithBudgetDepasse(dateDebut, dateFin));
+            tcAchat.setCellValueFactory(new PropertyValueFactory<>("achat"));
+            tcNom.setCellValueFactory(new PropertyValueFactory<>("nom"));
+            tcPrenom.setCellValueFactory(new PropertyValueFactory<>("prenom"));
+            tcId.setCellValueFactory(new PropertyValueFactory<>("id"));
+            tcAgence.setCellValueFactory(new PropertyValueFactory<>("agence"));
+
+            search();
+        }
+        else{
+            String dateDebut = dpDebut.getValue().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+            String dateFin = dpFin.getValue().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+            premierJour = dateDebut;
+            dernierJour = dateFin;
+            ouvrierController = new OuvrierController();
+            listOuvriers = FXCollections.observableArrayList();
+            listOuvriers.addAll(ouvrierController.getOuvrier(dateDebut, dateFin));
+            tcAchat.setCellValueFactory(new PropertyValueFactory<>("achat"));
+            tcNom.setCellValueFactory(new PropertyValueFactory<>("nom"));
+            tcPrenom.setCellValueFactory(new PropertyValueFactory<>("prenom"));
+            tcId.setCellValueFactory(new PropertyValueFactory<>("id"));
+            tcAgence.setCellValueFactory(new PropertyValueFactory<>("agence"));
+
+            search();
+        }
+
     }
 }
