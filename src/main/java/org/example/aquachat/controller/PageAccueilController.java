@@ -87,15 +87,19 @@ public class PageAccueilController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+
         ancList.toFront();
         dpDebut.setValue(LocalDate.now().withDayOfMonth(1));
         dpFin.setValue(LocalDate.now().withDayOfMonth(LocalDate.now().lengthOfMonth()));
-
         Image image = new Image(getClass().getResource("/image/settings.png").toExternalForm());
         imgSettings.setImage(image);
 
+
+
+
         try {
             ouvrierController = new OuvrierController();
+            ouvrierController.updateAquachat();
             listOuvriers = FXCollections.observableArrayList();
             listOuvriers.addAll(ouvrierController.getOuvrier(premierJour, dernierJour));
 
@@ -106,9 +110,8 @@ public class PageAccueilController implements Initializable {
             tcId.setCellValueFactory(new PropertyValueFactory<>("id"));
             tcAgence.setCellValueFactory(new PropertyValueFactory<>("agence"));
 
-             search();
+            search();
 
-            ouvrierController.updateAquachat();
 
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -151,7 +154,7 @@ public class PageAccueilController implements Initializable {
             String dateDebut = dpDebut.getValue().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
             String dateFin = dpFin.getValue().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
 
-           // if (!dateDebut.equals(premierJour) || !dateFin.equals(dernierJour)) {
+            if (!dateDebut.equals(premierJour) || !dateFin.equals(dernierJour)) {
                 premierJour = dateDebut;
                 dernierJour = dateFin;
                 ouvrierController = new OuvrierController();
@@ -166,7 +169,7 @@ public class PageAccueilController implements Initializable {
                 search();
 
 
-         //  }
+            }
 
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -215,8 +218,9 @@ public class PageAccueilController implements Initializable {
                     return true; // Correspondance avec l'agence
                 } else if (String.valueOf(ouvrier.getAchat()).toLowerCase().contains(lowerCaseFilter)) {
                     return true; // Correspondance avec le montant des achats
+                }else if (String.valueOf(ouvrier.getId()).toLowerCase().contains(lowerCaseFilter)) {
+                    return true; // Correspondance avec le montant des achats
                 }
-
                 return false; // Pas de correspondance
             });
         });

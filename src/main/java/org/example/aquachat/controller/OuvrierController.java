@@ -8,6 +8,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Set;
 
 public class OuvrierController {
@@ -26,7 +27,7 @@ public class OuvrierController {
 
     public ArrayList<Ouvrier>getOuvrier(String dateDebut,String dateFin){
         ArrayList<Ouvrier>ouvriers = new ArrayList<>();
-        HashMap<Integer,Integer>budget = getBudget();
+        HashMap<String,Integer>budget = getBudget();
         try{
             ps = cnx.prepareStatement(
                     "SELECT ClassificationGroup.caption AS agence, " +
@@ -59,14 +60,14 @@ public class OuvrierController {
             while(rs.next()){
                 String nom = rs.getString("nom");
                 String prenom = rs.getString("prenom");
-                String id = rs.getString("id");
-                double achat = rs.getDouble("totalCommande");
+                String id = rs.getString("id").trim();
+                double achat = Math.round( rs.getDouble("totalCommande"));
                 String agence = rs.getString("agence");
                 String fonction = rs.getString("fonction");
                 String email = rs.getString("email");
                 double seuil = 0;
-                if (budget.containsKey(Integer.parseInt(id))){
-                    seuil = budget.get(Integer.parseInt(id));
+                if (budget.containsKey(id.trim())){
+                    seuil = budget.get(id.trim());
                 }
 
                 Ouvrier unOuvrier = new Ouvrier(id,nom,prenom,agence,achat,email,fonction,seuil);
@@ -83,63 +84,83 @@ public class OuvrierController {
     }
 
 
-    public ArrayList<String> getOuvriersId(){
-
-        ArrayList<String>ids = new ArrayList<>();
-
+    public ArrayList<String> getOuvriersIdEBP() {
+        ArrayList<String> ids = new ArrayList<>();
         try {
-            ps = cnx.prepareStatement("select Colleague.Id, Colleague.Contact_Email from Colleague\n" +
-                    "where ISNUMERIC(CAST(colleague.id AS VARCHAR)) = 1 ");
+            ps = cnx.prepareStatement("SELECT Colleague.Id FROM Colleague WHERE ISNUMERIC(CAST(Colleague.Id AS VARCHAR)) = 1");
             rs = ps.executeQuery();
-            while(rs.next()){
-                ids.add(rs.getString("Id"));
+            while (rs.next()) {
+                ids.add(rs.getString("Id").trim()); // Normaliser les IDs
             }
-        }catch (Exception e){
-
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         return ids;
     }
 
-
-    public  void updateAquachat() throws SQLException, ClassNotFoundException {
-        ArrayList<String>ids = getOuvriersId();
-        try {
-            ArrayList<String> idsExistant = new ArrayList<>();
-            ps= cnxAquachat.prepareStatement("select * from aquachat");
-            rs = ps.executeQuery();
-            while(rs.next()){
-                idsExistant.add(rs.getString("UserId"));
+    public HashSet<String> getOuvriersIdAquachat() {
+        HashSet<String> idsExistantAquachat = new HashSet<>();
+        try (PreparedStatement ps = cnxAquachat.prepareStatement("SELECT UserId FROM aquachat");
+             ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                idsExistantAquachat.add(rs.getString("UserId").trim().toLowerCase());
             }
-            for(String id:ids ){
-                if(!idsExistant.contains(id)){
-                    ps = cnxAquachat.prepareStatement("insert into aquachat (UserId) values (?)");
-                    ps.setString(1,id);
-                    ps.executeUpdate();
-                    ps.close();
-                }
-
-            }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-        catch (Exception e){
-
-        }
-
-
+        return idsExistantAquachat;
     }
 
-    public HashMap<Integer,Integer> getBudget(){
-        HashMap<Integer,Integer>budget = new HashMap<>();
+    public ArrayList<String> getIdsInexistant() {
+        ArrayList<String> idInexistant = new ArrayList<>();
+        HashSet<String> idAquachat = getOuvriersIdAquachat();
+        ArrayList<String> idEbp = getOuvriersIdEBP();
+
+        for (String id : idEbp) {
+            if (!idAquachat.contains(id.trim().toLowerCase())) {
+                idInexistant.add(id);
+            }
+        }
+        return idInexistant;
+    }
+
+
+
+    public void updateAquachat() throws SQLException, ClassNotFoundException {
+        ArrayList<String> ids =getIdsInexistant(); // Récupère les IDs
+
+
+        // Prépare une seule fois l'insertion
+        String insertQuery = "INSERT INTO aquachat (UserId, role, seuil) VALUES (?, ?, ?)";
+        try (PreparedStatement ps = cnxAquachat.prepareStatement(insertQuery)) {
+            for (String id : ids) {
+                    ps.setString(1, id.trim());
+                    ps.setString(2, "1");
+                    ps.setInt(3, 2000);
+                    ps.addBatch();
+            }
+            ps.executeBatch();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw e; // Remonte l'erreur pour gestion
+        }
+    }
+
+
+    public HashMap<String,Integer> getBudget(){
+        HashMap<String,Integer>budget = new HashMap<>();
         try {
             ps = cnxAquachat.prepareStatement("select * from aquachat where role = 1");
             rs = ps.executeQuery();
             while(rs.next()){
-                budget.put(rs.getInt("UserId"),rs.getInt("Seuil"));
+                budget.put(rs.getString("UserId").trim(),rs.getInt("Seuil"));
             }
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
         return budget;
     }
+
 
 
 

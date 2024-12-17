@@ -89,13 +89,13 @@ public class AquAchatBDDController {
         }
     }
 
-    public String getBudget (String id){
+    public Double getBudget (String id){
         try {
             ps=cnxAquachat.prepareStatement("select seuil from aquachat where UserId = ?");
             ps.setString(1, id);
             rs=ps.executeQuery();
             if(rs.next()){
-                return rs.getString("seuil");
+                return rs.getDouble("seuil");
             }
         }catch (Exception e) {
             throw new RuntimeException(e);

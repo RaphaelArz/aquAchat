@@ -128,8 +128,14 @@ public class PageOuvrierController implements Initializable {
             String dateFin = dpFin.getValue().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
 
             aquAchatBDDController = new AquAchatBDDController();
-            lblSonBudget.setText(aquAchatBDDController.getBudget(ouvrier.getId())+" €");
+            this.ouvrier.setBudget(aquAchatBDDController.getBudget(ouvrier.getId().trim()));
+            lblSonBudget.setText(ouvrier.getBudget()+" €");
             // Vérifier si les dates ont changé avant d'actualiser le tableau
+
+            double budget = this.ouvrier.getBudget();
+            double taux = ouvrier.getAchat()/budget *100;
+            lblTaux.setText(Math.round(taux) +"%");
+
             if (!dateDebut.equals(premierJour) || !dateFin.equals(dernierJour)) {
                 // Mettre à jour les dates de comparaison
                 premierJour = dateDebut;
@@ -161,11 +167,12 @@ public class PageOuvrierController implements Initializable {
                 for (Commande commande : listCommande) {
                     depense += commande.getPrix();
                 }
-                lblsaDepense.setText(String.format("%.2f €", depense)); // Affichage formaté des dépenses
+                this.ouvrier.setAchat(depense);
 
-                double budget = this.ouvrier.getBudget();
-                double taux = depense/budget *100;
-                lblTaux.setText(Math.round(taux) +"%");
+
+                lblsaDepense.setText(String.format("%.2f €", ouvrier.getAchat())); // Affichage formaté des dépenses
+
+
 
 
             }
